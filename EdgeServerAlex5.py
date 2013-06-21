@@ -72,8 +72,10 @@ def make_eURLfile(self):
         """
         REFERER = self.headers.getheader('referer')
         if REFERER:
+            print 'REFERER', REFERER
             if whiteList(REFERER):
-                REFERER = REFERER.split('?')[0]  #when coming from JIRA comments, we have extra garbage
+                REFERER = REFERER.split('?')[0]  #coming from an edited JIRA comment, we have extra garbage
+                REFERER = REFERER.split('#')[0]  #coming from a new JIRA comments, we have extra garbage
                 if REFERER.endswith('/'):
                     REFERER=REFERER[:-1]
                 issue = REFERER.split('/')[-1]
@@ -132,9 +134,9 @@ def make_eURLfile(self):
             self.wfile.write('<INPUT type="hidden" name="DOWNLOAD" value="True">\n')  
             writeHiddenFields()
             if 'cName'  not in parsedQSLdict: parsedQSLdict['cName'] = 'CHANGEME'        
-            if 'edgeIP' not in parsedQSLdict: parsedQSLdict['edgeIP']= 'CHANGEME'        
+            if 'edgeIp' not in parsedQSLdict: parsedQSLdict['edgeIp']= 'CHANGEME'        
             self.wfile.write('Canvas Name : <INPUT type="text" name="cName"  value=' + parsedQSLdict['cName' ] + '><br/>' )
-            self.wfile.write('EdgeTable IP: <INPUT type="text" name="edgeIp"  value=' + parsedQSLdict['edgeIP'] + '><br/>' )
+            self.wfile.write('EdgeTable IP: <INPUT type="text" name="edgeIp"  value=' + parsedQSLdict['edgeIp'] + '><br/>' )
             self.wfile.write("""
                 <INPUT type="submit" value="Update Parameters"> <INPUT type="reset">""")
             
