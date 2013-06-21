@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
 # Copyright Jon Berg , turtlemeat.com
-# Modified by nikomu @ code.google.com     
+# Modified by nikomu @ code.google.com
+# Modified by Jon Schull
+# EdgeServer.py Jon.Schull@RIT.edu
 #https://code.google.com/p/python-simple-fileserver/#Code_Snippet
-#EdgeServer.py Jon.Schull@RIT.edu
 
 MSG="""EDGESERVER
 If the URL starts with /eurl, and the canvas name has been supplied, we'll deliver an eUrl file.
