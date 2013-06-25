@@ -7,7 +7,7 @@
 #https://code.google.com/p/python-simple-fileserver/#Code_Snippet
 
 MSG="""EDGESERVER
-If the URL starts with /eurl, and the canvas name has been supplied, we'll deliver an eUrl file.
+If the URL starts with /eurl, and the canvas name has been supplied, we'll deliver an eurl file.
 If the canvas name is missing, we'll ask you to supply it.
 <hr>
 Deliver the File:
@@ -104,7 +104,7 @@ def make_eURLfile(self):
     #DELIVER
     if ('cName' in parsedQSLdict) and ('DOWNLOAD' not in parsedQSLdict) : #deliver the eURL file.
         self.send_header('Content-type', 'application/octet-stream')
-        self.send_header('Content-Disposition', 'attachment; filename='+ parsedQSLdict['cName'] + '.eUrl')
+        self.send_header('Content-Disposition', 'attachment; filename='+ parsedQSLdict['cName'] + '.eurl')
         self.end_headers()
 
         self.wfile.write(parsedQSLdict) #write to the .eurl file in a JSON format
