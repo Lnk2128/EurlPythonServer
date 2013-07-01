@@ -104,8 +104,8 @@ def make_eURLfile(self):
     #DELIVER
     if ('cName' in parsedQSLdict) and ('DOWNLOAD' not in parsedQSLdict) : #deliver the eURL file.
         self.send_header('Content-type', 'application/octet-stream')
-		cleanName = parsedQSLdict['cName'] #remove spaces from the file name
-		cleanName.replace(' ', '_');
+        cleanName = parsedQSLdict['cName'] #remove spaces from the file name
+        cleanName.replace(' ', '_');
         self.send_header('Content-Disposition', 'attachment; filename='+ cleanName + '.eurl')
         self.end_headers()
 
