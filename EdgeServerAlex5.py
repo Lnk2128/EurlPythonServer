@@ -100,6 +100,9 @@ def make_eURLfile(self):
             urlString = urlString[:-1]
             self.wfile.write('<hr>' + urlString + '<hr>')
     
+    #If we have a jID and no cName, assume the cName is the jID.
+    if 'jID' in parsedQSLdict and 'cName' not in parsedQSLdict:
+        parsedQSLdict['cName'] = parsedQSLdict['jID']
     
     #DELIVER
     if ('cName' in parsedQSLdict) and ('DOWNLOAD' not in parsedQSLdict) : #deliver the eURL file.
