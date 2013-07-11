@@ -140,29 +140,30 @@ def make_eURLfile(self):
             if not readyToSend[elem]:
                 self.wfile.write('<label for="'+elem+'">'+getInformalName(elem)+'</label>' + ' <INPUT type="text" name="'+elem+'" id="'+elem+'" value=''><br/>' )
         
-        self.wfile.write("<span style='color:grey;'>Guessed Fields</span><br/>")
+        #self.wfile.write("<span style='color:grey;'>Guessed Fields</span><br/>")
         
         #add hidden fields the user has already provided
         for elem in query:
             print elem + ":" + str(getInformalName(elem))
             if query[elem] is not False:
-                self.wfile.write('<label for="'+str(elem)+'">'+str(getInformalName(elem))+'</label>' + ' <INPUT type="text" name="'+str(elem)+'" id="'+str(elem)+'"   value="'+query[elem]+' " ><br/>' )#disabled="disabled"
+                self.wfile.write('<label for="'+str(elem)+'">'+str(getInformalName(elem))+'</label>' + ' <INPUT type="text" name="'+str(elem)+'" id="'+str(elem)+'"   value="'+query[elem]+' " disabled="disabled"><br/>' )#
+        self.wfile.write("""
+                            <INPUT type='button' value='Unlock Guessed Fields' onclick='
+                            
+                            var e = document.querySelectorAll("input");
+                            for(var i = 0; i < e.length; i++)
+                            {
+                                if(e[i].disabled)
+                                {
+                                    console.log("hey");
+                                    e[i].removeAttribute("disabled");
+                                }
+                            };
+                            ' /><br/>
+                        """)
         
         self.wfile.write("<INPUT type='submit' value='Attempt Download'/>")
-        #self.wfile.write("""
-         #                   <INPUT type='button' value='Unlock Guessed Fields' onclick='
-        #                    
-         #                   var e = document.querySelectorAll("input");
-        #                    for(var i = 0; i < e.length; i++)
-         #                   {
-        #                        if(e[i].disabled)
-         #                       {
-        #                            console.log("hey");
-         #                           e[i].removeAttribute("disabled");
-        #                        }
-         #                   };
-        #                    ' /><br/>
-         #               """)
+        
         self.wfile.write("</P></FORM>")
         
         
