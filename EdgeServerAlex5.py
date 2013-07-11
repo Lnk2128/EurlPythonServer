@@ -108,7 +108,7 @@ def make_eURLfile(self):
     if ('cName' in parsedQSLdict) and ('DOWNLOAD' not in parsedQSLdict) : #deliver the eURL file.
         self.send_header('Content-type', 'application/octet-stream')
         cleanName = parsedQSLdict['cName'] #remove spaces from the file name
-        cleanName = cleanName.replace(" ", "_")
+        cleanName = cleanName.replace(' ', '_');
         self.send_header('Content-Disposition', 'attachment; filename='+ cleanName + '.eurl')
         self.end_headers()
 
@@ -157,41 +157,16 @@ class MyHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         #print self.path
         try:
+  
+            #if they ask for a eurl, send them the eurl builder, if they ask for anything else, send them the tutorial
+            if self.path.startswith("/eurl"):   #ALEX our dynamic content
+                make_eURLfile(self)
 
-            if self.path == '/' :     
+            else: 
                 self.send_response(200)
                 self.send_header('Content-type',    'text/html')
                 self.end_headers()
                 self.wfile.write(linkify(MSG))
-                return     
-
-
-            if ( self.path.endswith(".html") or self.path.endswith(".txt") ) :
-                f = open(curdir + sep + self.path)
-                #note that this potentially makes every file on your computer readable by the internet
-                self.send_response(200)
-                self.send_header('Content-type',    'text/html')
-                self.end_headers()
-                self.wfile.write(f.read())
-                f.close()
-                return
-                
-            if self.path.endswith(".esp"):   #our dynamic content
-                self.send_response(200)
-                self.send_header('Content-type',    'text/html')
-                self.end_headers()
-                self.wfile.write("hey, today is the" + str(time.localtime()[7]))
-                self.wfile.write(" day in the year " + str(time.localtime()[0]))
-                return
-                
-            if self.path.startswith("/eurl"):   #ALEX our dynamic content
-                make_eURLfile(self)
-
-            else:
-                self.send_response(200)
-                self.send_header('Content-type',    'text/html')
-                self.end_headers()
-                self.wfile.write("SORRY:  I can't handle  " + self.path )
                 return
 
             return # be sure not to fall into "except:" clause ?       
