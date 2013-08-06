@@ -1,22 +1,23 @@
 <?php
 
-if(count($_GET) == 0)
+
+if(count($_GET) == 0)//provide usage directions.
 {
     make_tutorial();
 }
-else
+else//serve the eURL or request more fields.
 {
     make_eurl();
 }
 
 
 //HELPER FUNCTIONS:
-function beginsWith($term, $start)
+function beginsWith($term, $start) //checks if the first part of a string matches a given term. (ie: beginsWith("abcd", "abc") -> true)
 {
     return strpos($term, $start, 0) === 0;
 }
 
-function writeHiddenFields($list)
+function writeHiddenFields($list)//stores values in the page as hidden input fields. For hanging onto parameters the user has given before they give all parameters.
 {
     foreach($list as $key => $value)
     {
@@ -29,7 +30,7 @@ function writeHiddenFields($list)
         
     }
 }
-function writeURLstring($list)
+function writeURLstring($list) //Writes out a list of parameters already provided.
 {
     $urlString = "<i> This URL can be shared to access the Canvas</i><br/>http://" . $_SERVER['SERVER_ADDR']  . ":" . $_SERVER['SERVER_PORT'] . "/eurlserver?";
     foreach($list as $key => $value)
@@ -45,17 +46,17 @@ function writeURLstring($list)
 
 
 //WORKHORSE FUNCTION:
-function make_eurl()
+function make_eurl()//This takes in the GET parameters and returns an eURL or returns a request for more parameters
 {
     
     $terms = $_GET;
     
-    if (!isset($terms["verNum"]))
+    if (!isset($terms["verNum"]))//version number is used inside edge table.
     {
         $terms['verNum'] = 0.2;
     }
     
-    if(isset($terms["jDomain"]) and !isset($terms["jID"]))
+    if(isset($terms["jDomain"]) and !isset($terms["jID"])) //Tries to extract a jID from the referer header.
     {
         $ref;
         foreach(getallheaders() as $key => $val)
@@ -70,14 +71,14 @@ function make_eurl()
         if(isset($ref))
         {
             
-            if( beginsWith($ref, "http://129.21.142.226:8080") or
-                beginsWith($ref, "https://jira.acme-edge.com") )
+            if( beginsWith($ref, "http://129.21.142.226:8080") or //NOTE: You must change this to match your JIRA server ip(s).
+                beginsWith($ref, "https://jira.acme-edge.com") )  //They are meant to be a whitelist of something? 
                 {
                     
-                    $ref = explode("?", $ref); $ref = $ref[0];
-                    $ref = explode("#", $ref); $ref = $ref[0];
+                    $ref = explode("?", $ref); $ref = $ref[0]; //Apperntly you can't access an index of explode directly, it must be assigned first.
+                    $ref = explode("#", $ref); $ref = $ref[0]; //This gets everything before the query or page subsection of a url.
                     
-                    if(substr($ref, -1) == "/")
+                    if(substr($ref, -1) == "/") //Then, we get everything after the "/". IE: www.a.com/WHAT-WE-WANT?query=apple. This gives us "WHAT-WE-WANT"
                     {
                         $ref = substr($ref, 0, -1);
                     }
@@ -88,28 +89,28 @@ function make_eurl()
     
     
     
-    if(isset($terms["jID"]) and !isset($terms["cName"]))
+    if(isset($terms["jID"]) and !isset($terms["cName"])) //Just use the jID as the canvas name. Its good enough, and the user doesn't have to see our ugly website.
     {
         $terms["cName"] = $terms["jID"];
     }
     
-    if(isset($terms["cName"]) and !isset($terms["DOWNLOAD"]))
+    if(isset($terms["cName"]) and !isset($terms["DOWNLOAD"]))//Build the file and send it off.
     {
-        header("Content-type: application/octet-stream");
+        header("Content-type: application/octet-stream");//file is an octet stream.
         $cleanName = $terms['cName'];
-        $cleanName = str_replace(" ", "_", $cleanName);
+        $cleanName = str_replace(" ", "_", $cleanName);//clean filename
         header("Content-Disposition: attachment; filename=" . $cleanName . ".eurl");
 
-        echo json_encode($terms);
+        echo json_encode($terms);//look at that. eURL's are json. Aren't we clever? 
     }
-    else
+    else //We need more information. 
     {
     
         header("Content-type: text/html");
         echo "<FORM action='/eurlserver?' enctype='multipart/form-data' method='get'>";
         echo "<P>";
 
-        if(isset($terms["DOWNLOAD"]) and isset($terms["cName"]) and isset($terms["edgeIp"]))
+        if(isset($terms["DOWNLOAD"]) and isset($terms["cName"]) and isset($terms["edgeIp"])) //Actually, we don't. Just want you to acknoledge we're wasting your time?
         {
             echo "<i>We're good to go!</i><hr>";
             unset($terms["DOWNLOAD"]);
@@ -117,17 +118,17 @@ function make_eurl()
             writeHiddenFields($terms);
             echo "</hr> <INPUT type='submit' value='CLICK TO DOWNLOAD'>";
         }
-        else
+        else //we actually need more info.
         {
             echo "If you are reading this in the browser, you need to supply more information.<hr/>";
             echo "<INPUT type='hidden' name='DOWNLOAD' value='True'>\n";
             writeHiddenFields($terms);
             
-            if(!isset($terms["cName"]))
+            if(!isset($terms["cName"])) // We need a canvas name
             {
                 $terms["cName"] = "CHANGEME";
             }
-            if(!isset($terms["edgeIp"]))
+            if(!isset($terms["edgeIp"])) //we need an edgetable server ip.
             {
                 $terms["edgeIp"] = "CHANGEME";
             }
@@ -143,7 +144,7 @@ function make_eurl()
 }
 
 //WRONG REQUEST FUNCTION:
-function make_tutorial()
+function make_tutorial() //useage directions for the user. I pray they never have to read them.
 {
 
 
